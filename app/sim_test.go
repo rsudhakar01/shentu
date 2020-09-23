@@ -256,7 +256,7 @@ func TestAppStateDeterminism(t *testing.T) {
 	appHashList := make([]json.RawMessage, numTimesToRunPerSeed)
 
 	for j := 0; j < numTimesToRunPerSeed; j++ {
-		logger := log.NewNopLogger()
+		logger := logrus.NewLogrusLogger()
 		db := dbm.NewMemDB()
 		app := NewCertiKApp(logger, db, nil, true, map[int64]bool{}, simapp.FlagPeriodValue, interBlockCacheOpt())
 
