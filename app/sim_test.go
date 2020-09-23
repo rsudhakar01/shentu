@@ -25,6 +25,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/supply"
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
 
+	"github.com/certikfoundation/shentu/toolsets/logrus"
 	"github.com/certikfoundation/shentu/x/cert"
 	"github.com/certikfoundation/shentu/x/cvm"
 	distr "github.com/certikfoundation/shentu/x/distribution"
@@ -56,7 +57,7 @@ func interBlockCacheOpt() func(*baseapp.BaseApp) {
 }
 
 func TestFullAppSimulation(t *testing.T) {
-	config, db, dir, logger, skip, err := simapp.SetupSimulation("leveldb-app-sim", "Simulation")
+	config, db, dir, _, skip, err := simapp.SetupSimulation("leveldb-app-sim", "Simulation")
 	if skip {
 		t.Skip("skipping application simulation")
 	}
@@ -67,7 +68,8 @@ func TestFullAppSimulation(t *testing.T) {
 		require.NoError(t, os.RemoveAll(dir))
 	}()
 
-	app := NewCertiKApp(logger, db, nil, true, map[int64]bool{}, simapp.FlagPeriodValue, fauxMerkleModeOpt)
+	logrusLogger := logrus.NewLogrusLogger()
+	app := NewCertiKApp(logrusLogger, db, nil, true, map[int64]bool{}, simapp.FlagPeriodValue, fauxMerkleModeOpt)
 	require.Equal(t, AppName, app.Name())
 
 	// run randomized simulation
