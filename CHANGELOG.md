@@ -35,7 +35,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 # Changelog
 
-## [Unreleased] - TBD
+## [1.0.0] - 10/24/2020
 
 ### Client Breaking Changes
 
