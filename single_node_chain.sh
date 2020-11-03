@@ -7,6 +7,7 @@ rm -rf ~/.certikd
 rm -rf ~/.certikcli
 
 certikd init node0 --chain-id certikchain
+certikcli config chain-id certikchain
 certikcli config keyring-backend test
 
 certikcli keys add jack
