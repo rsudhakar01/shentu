@@ -30,7 +30,6 @@ import (
 	distr "github.com/certikfoundation/shentu/x/distribution"
 	"github.com/certikfoundation/shentu/x/gov"
 	"github.com/certikfoundation/shentu/x/mint"
-	"github.com/certikfoundation/shentu/x/oracle"
 	"github.com/certikfoundation/shentu/x/shield"
 	"github.com/certikfoundation/shentu/x/staking"
 )
@@ -163,8 +162,7 @@ func TestAppImportExport(t *testing.T) {
 		{app.keys[gov.StoreKey], newApp.keys[gov.StoreKey], [][]byte{}},
 		{app.keys[cert.StoreKey], newApp.keys[cert.StoreKey], [][]byte{}},
 		{app.keys[cvm.StoreKey], newApp.keys[cvm.StoreKey], [][]byte{}},
-		{app.keys[oracle.StoreKey], newApp.keys[oracle.StoreKey], [][]byte{oracle.TaskStoreKeyPrefix, oracle.ClosingTaskStoreKeyPrefix}},
-		{app.keys[shield.StoreKey], newApp.keys[shield.StoreKey], [][]byte{shield.WithdrawQueueKey, shield.PurchaseQueueKey, shield.BlockServiceFeesKey}},
+		{app.keys[shield.StoreKey], newApp.keys[shield.StoreKey], [][]byte{shield.WithdrawQueueKey, shield.PurchaseQueueKey}},
 	}
 
 	for _, skp := range storeKeysPrefixes {

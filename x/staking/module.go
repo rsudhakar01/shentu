@@ -194,6 +194,5 @@ func (AppModule) ProposalContents(_ module.SimulationState) []sim.WeightedPropos
 
 // RandomizedParams returns functions that generate params for the module.
 func (AppModuleBasic) RandomizedParams(r *rand.Rand) []sim.ParamChange {
-	return []sim.ParamChange{}
-	//return stakingSim.ParamChanges(r)
+	return stakingSim.ParamChanges(r)
 }

@@ -16,11 +16,9 @@ func InitGenesis(ctx sdk.Context, k Keeper, data GenesisState) []abci.ValidatorU
 	k.SetTotalCollateral(ctx, data.TotalCollateral)
 	k.SetTotalWithdrawing(ctx, data.TotalWithdrawing)
 	k.SetTotalShield(ctx, data.TotalShield)
-	k.SetTotalClaimed(ctx, data.TotalClaimed)
+	k.SetTotalLocked(ctx, data.TotalLocked)
 	k.SetServiceFees(ctx, data.ServiceFees)
 	k.SetRemainingServiceFees(ctx, data.RemainingServiceFees)
-	k.SetGlobalShieldStakingPool(ctx, data.GlobalStakingPool)
-	k.SetShieldStakingRate(ctx, data.ShieldStakingRate)
 	for _, pool := range data.Pools {
 		k.SetPool(ctx, pool)
 	}
@@ -32,12 +30,6 @@ func InitGenesis(ctx sdk.Context, k Keeper, data GenesisState) []abci.ValidatorU
 			k.InsertExpiringPurchaseQueue(ctx, purchaseList, entry.ProtectionEndTime)
 		}
 	}
-	for _, purchase := range data.StakeForShields {
-		k.SetStakeForShield(ctx, purchase.PoolID, purchase.Purchaser, purchase)
-	}
-	for _, originalStaking := range data.OriginalStakings {
-		k.SetOriginalStaking(ctx, originalStaking.PurchaseID, originalStaking.Amount)
-	}
 	for _, provider := range data.Providers {
 		k.SetProvider(ctx, provider.Address, provider)
 	}
@@ -45,9 +37,7 @@ func InitGenesis(ctx sdk.Context, k Keeper, data GenesisState) []abci.ValidatorU
 		k.InsertWithdrawQueue(ctx, withdraw)
 	}
 	k.SetLastUpdateTime(ctx, data.LastUpdateTime)
-	for _, pRPair := range data.ProposalIDReimbursementPairs {
-		k.SetReimbursement(ctx, pRPair.ProposalID, pRPair.Reimbursement)
-	}
+
 	return []abci.ValidatorUpdate{}
 }
 
@@ -60,7 +50,7 @@ func ExportGenesis(ctx sdk.Context, k Keeper) GenesisState {
 	totalCollateral := k.GetTotalCollateral(ctx)
 	totalWithdrawing := k.GetTotalWithdrawing(ctx)
 	totalShield := k.GetTotalShield(ctx)
-	totalClaimed := k.GetTotalClaimed(ctx)
+	totalLocked := k.GetTotalLocked(ctx)
 	serviceFees := k.GetServiceFees(ctx)
 	remainingServiceFees := k.GetRemainingServiceFees(ctx)
 	pools := k.GetAllPools(ctx)
@@ -70,13 +60,6 @@ func ExportGenesis(ctx sdk.Context, k Keeper) GenesisState {
 	providers := k.GetAllProviders(ctx)
 	withdraws := k.GetAllWithdraws(ctx)
 	lastUpdateTime, _ := k.GetLastUpdateTime(ctx)
-	stakingPurchaseRate := k.GetShieldStakingRate(ctx)
-	globalStakingPool := k.GetGlobalShieldStakingPool(ctx)
-	stakingPurchases := k.GetAllStakeForShields(ctx)
-	originalStaking := k.GetAllOriginalStakings(ctx)
-	reimbursements := k.GetAllProposalIDReimbursementPairs(ctx)
 
-	return types.NewGenesisState(shieldAdmin, nextPoolID, nextPurchaseID, poolParams, claimProposalParams,
-		totalCollateral, totalWithdrawing, totalShield, totalClaimed, serviceFees, remainingServiceFees, pools,
-		providers, purchaseLists, withdraws, lastUpdateTime, stakingPurchaseRate, globalStakingPool, stakingPurchases, originalStaking, reimbursements)
+	return types.NewGenesisState(shieldAdmin, nextPoolID, nextPurchaseID, poolParams, claimProposalParams, totalCollateral, totalWithdrawing, totalShield, totalLocked, serviceFees, remainingServiceFees, pools, providers, purchaseLists, withdraws, lastUpdateTime)
 }

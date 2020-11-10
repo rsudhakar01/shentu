@@ -17,7 +17,6 @@ import (
 type Keeper struct {
 	storeKey     sdk.StoreKey
 	cdc          *codec.Codec
-	ak           types.AccountKeeper
 	sk           types.StakingKeeper
 	gk           types.GovKeeper
 	supplyKeeper types.SupplyKeeper
@@ -25,11 +24,10 @@ type Keeper struct {
 }
 
 // NewKeeper creates a shield keeper.
-func NewKeeper(cdc *codec.Codec, shieldStoreKey sdk.StoreKey, ak types.AccountKeeper, sk types.StakingKeeper, gk types.GovKeeper, supplyKeeper types.SupplyKeeper, paramSpace params.Subspace) Keeper {
+func NewKeeper(cdc *codec.Codec, shieldStoreKey sdk.StoreKey, sk types.StakingKeeper, gk types.GovKeeper, supplyKeeper types.SupplyKeeper, paramSpace params.Subspace) Keeper {
 	return Keeper{
 		storeKey:     shieldStoreKey,
 		cdc:          cdc,
-		ak:           ak,
 		sk:           sk,
 		gk:           gk,
 		supplyKeeper: supplyKeeper,
@@ -72,6 +70,11 @@ func (k Keeper) GetPoolBySponsor(ctx sdk.Context, sponsor string) (types.Pool, b
 		return ret, false
 	}
 	return ret, true
+}
+
+// DepositNativeServiceFees deposits service fees in native tokens from the shield admin or purchasers.
+func (k Keeper) DepositNativeServiceFees(ctx sdk.Context, serviceFees sdk.Coins, from sdk.AccAddress) error {
+	return k.supplyKeeper.SendCoinsFromAccountToModule(ctx, from, types.ModuleName, serviceFees)
 }
 
 // BondDenom returns staking bond denomination.

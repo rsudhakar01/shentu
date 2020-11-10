@@ -23,7 +23,7 @@ type Keeper struct {
 	supplyKeeper govTypes.SupplyKeeper
 
 	// the reference to the DelegationSet and ValidatorSet to get information about validators and delegators
-	stakingKeeper types.StakingKeeper
+	stakingKeeper govTypes.StakingKeeper
 
 	// the reference to get information about certifiers
 	CertKeeper types.CertKeeper
@@ -48,7 +48,7 @@ type Keeper struct {
 // - and tallying the result of the vote.
 func NewKeeper(
 	cdc *codec.Codec, key sdk.StoreKey, paramSpace types.ParamSubspace, supplyKeeper govTypes.SupplyKeeper,
-	stakingKeeper types.StakingKeeper, certKeeper types.CertKeeper, shieldKeeper types.ShieldKeeper,
+	stakingKeeper govTypes.StakingKeeper, certKeeper types.CertKeeper, shieldKeeper types.ShieldKeeper,
 	upgradeKeeper types.UpgradeKeeper, router govTypes.Router,
 ) Keeper {
 	// ensure governance module account is set
@@ -128,9 +128,4 @@ func (k Keeper) IterateAllDeposits(ctx sdk.Context, cb func(deposit types.Deposi
 // Tally counts the votes and returns whether the proposal passes and/or if tokens should be burned.
 func (k Keeper) Tally(ctx sdk.Context, proposal types.Proposal) (passes bool, burnDeposits bool, tallyResults gov.TallyResult) {
 	return Tally(ctx, k, proposal)
-}
-
-// BondDenom returns the staking denom.
-func (k Keeper) BondDenom(ctx sdk.Context) string {
-	return k.stakingKeeper.BondDenom(ctx)
 }

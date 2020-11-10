@@ -3,7 +3,6 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/certikfoundation/shentu/common"
 	"github.com/certikfoundation/shentu/x/shield/types"
 )
 
@@ -14,8 +13,8 @@ func (k Keeper) DepositCollateral(ctx sdk.Context, from sdk.AccAddress, amount s
 		provider = k.addProvider(ctx, from)
 	}
 	// Check if there are enough delegations backing collaterals.
-	if ctx.BlockHeight() < common.Update1Height && provider.DelegationBonded.LT(provider.Collateral.Add(amount).Sub(provider.Withdrawing)) ||
-		ctx.BlockHeight() >= common.Update1Height && provider.DelegationBonded.LT(provider.Collateral.Add(amount)) {
+	// DelegationBonded >= Collateral - Withdrawing + amount
+	if provider.DelegationBonded.LT(provider.Collateral.Add(amount).Sub(provider.Withdrawing)) {
 		return types.ErrInsufficientStaking
 	}
 
@@ -32,8 +31,6 @@ func (k Keeper) DepositCollateral(ctx sdk.Context, from sdk.AccAddress, amount s
 }
 
 // WithdrawCollateral withdraws a community member's collateral for a pool.
-// In case of unbonding-initiated withdraw, store the validator address and
-// the creation height.
 func (k Keeper) WithdrawCollateral(ctx sdk.Context, from sdk.AccAddress, amount sdk.Int) error {
 	if amount.IsZero() {
 		return nil
