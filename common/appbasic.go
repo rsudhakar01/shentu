@@ -14,27 +14,27 @@ import (
 // AppModuleBasic defines common app module basics object.
 type AppModuleBasic struct {
 	moduleName          string
-	regCodec            func(cdc *codec.Codec)
-	modCdc              *codec.Codec
+	regCodec            func(cdc *codec.LegacyAmino)
+	modCdc              *codec.LegacyAmino
 	defaultGenesisState interface{}
 	validateGenesis     func(data json.RawMessage) error
 	storeKey            string
-	registerRoutes      func(cliCtx client.CLIContext, r *mux.Router)
-	getQueryCmd         func(storeKey string, cdc *codec.Codec) *cobra.Command
-	getTxCmd            func(cdc *codec.Codec) *cobra.Command
+	registerRoutes      func(cliCtx client.Context, r *mux.Router)
+	getQueryCmd         func(storeKey string, cdc *codec.LegacyAmino) *cobra.Command
+	getTxCmd            func(cdc *codec.LegacyAmino) *cobra.Command
 }
 
 // NewAppModuleBasic create a new common AppModuleBasic object.
 func NewAppModuleBasic(
 	moduleName string,
-	regCodec func(cdc *codec.Codec),
-	modCdc *codec.Codec,
+	regCodec func(cdc *codec.LegacyAmino),
+	modCdc *codec.LegacyAmino,
 	defaultGenesisState interface{},
 	validateGenesis func(data json.RawMessage) error,
 	storeKey string,
-	registerRoutes func(cliCtx client.CLIContext, r *mux.Router),
-	getQueryCmd func(storeKey string, cdc *codec.Codec) *cobra.Command,
-	getTxCmd func(cdc *codec.Codec) *cobra.Command,
+	registerRoutes func(cliCtx client.Context, r *mux.Router),
+	getQueryCmd func(storeKey string, cdc *codec.LegacyAmino) *cobra.Command,
+	getTxCmd func(cdc *codec.LegacyAmino) *cobra.Command,
 ) AppModuleBasic {
 	amb := AppModuleBasic{}
 	amb.moduleName = moduleName
@@ -55,7 +55,7 @@ func (amb AppModuleBasic) Name() string {
 }
 
 // RegisterCodec registers module codec.
-func (amb AppModuleBasic) RegisterCodec(cdc *codec.Codec) {
+func (amb AppModuleBasic) RegisterCodec(cdc *codec.LegacyAmino) {
 	amb.regCodec(cdc)
 }
 
@@ -65,17 +65,17 @@ func (amb AppModuleBasic) DefaultGenesis() json.RawMessage {
 }
 
 // RegisterRESTRoutes registers REST routes for the module.
-func (amb AppModuleBasic) RegisterRESTRoutes(ctx client.CLIContext, rtr *mux.Router) {
+func (amb AppModuleBasic) RegisterRESTRoutes(ctx client.Context, rtr *mux.Router) {
 	amb.registerRoutes(ctx, rtr)
 }
 
 // GetQueryCmd gets the root query command of this module.
-func (amb AppModuleBasic) GetQueryCmd(cdc *codec.Codec) *cobra.Command {
+func (amb AppModuleBasic) GetQueryCmd(cdc *codec.LegacyAmino) *cobra.Command {
 	return amb.getQueryCmd(amb.storeKey, cdc)
 }
 
 // GetTxCmd gets the root tx command of this module.
-func (amb AppModuleBasic) GetTxCmd(cdc *codec.Codec) *cobra.Command {
+func (amb AppModuleBasic) GetTxCmd(cdc *codec.LegacyAmino) *cobra.Command {
 	return amb.getTxCmd(cdc)
 }
 

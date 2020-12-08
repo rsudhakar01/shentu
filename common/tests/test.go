@@ -3,7 +3,8 @@ package tests
 import (
 	"time"
 
-	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/ed25519"
 	"github.com/tendermint/tendermint/libs/log"
@@ -62,16 +63,16 @@ func MakeTestAccount() (crypto.PrivKey, crypto.PubKey, sdk.AccAddress, sdk.ValAd
 }
 
 // CodecRegister is the alias for module codec register function.
-type CodecRegister func(*codec.Codec)
+type CodecRegister func(*codec.LegacyAmino)
 
 // MakeTestCodec creates an instant codec and registers the modules in it for testing.
-func MakeTestCodec(codecRegisters []CodecRegister) *codec.Codec {
-	cdc := codec.New()
+func MakeTestCodec(codecRegisters []CodecRegister) *codec.LegacyAmino {
+	cdc := codec.NewLegacyAmino()
 	for _, RegisterCodec := range codecRegisters {
 		RegisterCodec(cdc)
 	}
-	sdk.RegisterCodec(cdc)
-	codec.RegisterCrypto(cdc)
+	sdk.RegisterLegacyAminoCodec(cdc)
+	codec.RegisterEvidences(cdc)
 	return cdc
 }
 
@@ -111,7 +112,7 @@ func MakeTestContext(
 	db := MakeTestDB()
 	ms := MakeTestStore(db, kvStoreKeys, transientStoreKeys)
 	ctx := sdk.NewContext(
-		ms, abci.Header{ChainID: chainID, Time: MakeTestTimestampCurrent()}, isCheckTx, log.NewNopLogger(),
+		ms, tmproto.Header{ChainID: chainID, Time: MakeTestTimestampCurrent()}, isCheckTx, log.NewNopLogger(),
 	)
 	return ctx
 }
