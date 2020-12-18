@@ -1,7 +1,9 @@
 package rest
 
 import (
+	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/gorilla/mux"
 
@@ -10,7 +12,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
-func registerQueryRoutes(cliCtx client.CLIContext, r *mux.Router) {
+func registerQueryRoutes(cliCtx client.Context, r *mux.Router) {
 	// Get validator count
 	r.HandleFunc("/staking/all_validators", allValidatorsHandlerFn(cliCtx)).Methods("GET")
 }
@@ -20,32 +22,52 @@ type AllValidatorsResult struct {
 	types.Validators
 }
 
-// HTTP request handler to query complete list of validators
-func allValidatorsHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+// HTTP request handler to query list of validators
+func allValidatorsHandlerFn(clientCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		_, _, _, err := rest.ParseHTTPArgsWithLimit(r, 100)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+		_, page, _, err := rest.ParseHTTPArgsWithLimit(r, 0)
+		limit := 1000 // hard code result limit to 1000
+		if rest.CheckBadRequestError(w, err) {
 			return
 		}
 
-		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
+		clientCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, clientCtx, r)
 		if !ok {
 			return
 		}
 
-		resKVs, height, err := cliCtx.QuerySubspace(types.ValidatorsKey, types.StoreKey)
-		if err != nil {
+		status := r.FormValue("status")
+		// These are query params that were available in =<0.39. We show a nice
+		// error message for this breaking change.
+		if status == "bonded" || status == "unbonding" || status == "unbonded" {
+			err := fmt.Errorf("cosmos sdk v0.40 introduces a breaking change on this endpoint:"+
+				" instead of querying using `?status=%s`, please use `status=BOND_STATUS_%s`", status, strings.ToUpper(status))
+
+			if rest.CheckBadRequestError(w, err) {
+				return
+			}
+
+		}
+
+		if status == "" {
+			status = types.BondStatusBonded
+		}
+
+		params := types.NewQueryValidatorsParams(page, limit, status)
+
+		bz, err := clientCtx.LegacyAmino.MarshalJSON(params)
+		if rest.CheckBadRequestError(w, err) {
 			return
 		}
 
-		var validators types.Validators
-		for _, kv := range resKVs {
-			validators = append(validators, types.MustUnmarshalValidator(cliCtx.Codec, kv.Value))
+		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryValidators)
+
+		res, height, err := clientCtx.QueryWithData(route, bz)
+		if rest.CheckInternalServerError(w, err) {
+			return
 		}
 
-		res := AllValidatorsResult{len(resKVs), validators}
-		cliCtx = cliCtx.WithHeight(height)
-		rest.PostProcessResponse(w, cliCtx, res)
+		clientCtx = clientCtx.WithHeight(height)
+		rest.PostProcessResponse(w, clientCtx, res)
 	}
 }

@@ -64,6 +64,7 @@ import (
 	"github.com/certikfoundation/shentu/x/shield"
 	"github.com/certikfoundation/shentu/x/slashing"
 	"github.com/certikfoundation/shentu/x/staking"
+	stakingkeeper "github.com/certikfoundation/shentu/x/staking/internal/keeper"
 )
 
 const (
@@ -240,11 +241,12 @@ func NewCertiKApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 		bankSubspace,
 		app.BlacklistedAccAddrs(),
 	)
-	stakingKeeper := staking.NewKeeper(
+	stakingKeeper := stakingkeeper.NewKeeper(
 		app.cdc,
-		keys[staking.StoreKey],
-		&app.supplyKeeper,
-		stakingSubspace,
+		keys[stakingtypes.StoreKey],
+		&app.accountKeeper,
+		app.bankKeeper,
+		app.GetSubspace(stakingtypes.ModuleName),
 	)
 	app.distrKeeper = distr.NewKeeper(
 		app.cdc,
