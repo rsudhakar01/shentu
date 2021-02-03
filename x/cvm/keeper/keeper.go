@@ -125,7 +125,7 @@ func (k *Keeper) Call(ctx sdk.Context, caller, callee sdk.AccAddress, value uint
 		if isRuntime {
 			ret = code
 		} else {
-			ret, err = wasm.RunWASM(cache, callParams, code)
+			ret, err = wasm.RunWASM(cache, callParams, NewEventSink(ctx), code)
 		}
 	} else {
 		ret, err = newCVM.Execute(cache, bc, NewEventSink(ctx), callParams, code)

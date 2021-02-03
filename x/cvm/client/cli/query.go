@@ -15,8 +15,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/exported"
 
-	"github.com/hyperledger/burrow/execution/evm/abi"
-
 	"github.com/certikfoundation/shentu/common"
 	"github.com/certikfoundation/shentu/x/cvm/client/utils"
 	"github.com/certikfoundation/shentu/x/cvm/types"
@@ -96,11 +94,8 @@ func queryContractAndPrint(cliCtx context.CLIContext, cdc *codec.Codec, queryPat
 	}
 	var out types.QueryResView
 	cdc.MustUnmarshalJSON(res, &out)
-	ret, err := abi.DecodeFunctionReturn(string(abiSpec), fname, out.Ret)
-	if err != nil {
-		return fmt.Errorf("decoding function return: %v", err)
-	}
-	err = cliCtx.PrintOutput(ret)
+	hexBytes := hex.EncodeToString(out.Ret)
+	err = cliCtx.PrintOutput(hexBytes)
 	if err != nil {
 		return fmt.Errorf("printing output: %v", err)
 	}

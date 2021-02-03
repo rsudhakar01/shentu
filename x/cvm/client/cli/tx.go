@@ -245,16 +245,18 @@ func appendDeployMsgs(cmd *cobra.Command, cliCtx context.CLIContext, msgs []sdk.
 		objectNameUpper := strings.ToUpper(object.Objectname)
 		if fileNameUpper == objectNameUpper || fileExtensionUpper == ".BYTECODE" {
 			fileNameMatch = true
-			if len(argumentsRaw) > 0 {
+			isEWASM := viper.GetBool(FlagEWASM)
+			isRuntime := viper.GetBool(FlagRuntime)
+			var msg sdk.Msg
+			if len(argumentsRaw) > 0 && !isEWASM {
 				callArgsBytes, err := parseData("", object.Contract.Abi, arguments, logger)
 				if err != nil {
 					return msgs, err
 				}
 				code = append(code, callArgsBytes...)
 			}
-			isEWASM := viper.GetBool(FlagEWASM)
-			isRuntime := viper.GetBool(FlagRuntime)
-			msg := types.NewMsgDeploy(cliCtx.GetFromAddress(), value, code, string(object.Contract.Abi), metas, isEWASM, isRuntime)
+			msg = types.NewMsgDeploy(cliCtx.GetFromAddress(), value, code, string(object.Contract.Abi), metas, isEWASM, isRuntime)
+
 			if err := msg.ValidateBasic(); err != nil {
 				return msgs, err
 			}

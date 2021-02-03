@@ -8,6 +8,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/certikfoundation/shentu/x/cvm/compile"
+
 	"github.com/stretchr/testify/require"
 	"github.com/tmthrgd/go-hex"
 
@@ -26,7 +28,6 @@ import (
 	"github.com/certikfoundation/shentu/common"
 	"github.com/certikfoundation/shentu/simapp"
 	"github.com/certikfoundation/shentu/x/cert"
-	"github.com/certikfoundation/shentu/x/cvm/compile"
 	"github.com/certikfoundation/shentu/x/cvm/keeper"
 	"github.com/certikfoundation/shentu/x/cvm/types"
 )
@@ -760,7 +761,7 @@ func TestPrecompiles(t *testing.T) {
 func TestEWASM(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.BaseApp.NewContext(false, abci.Header{Time: time.Now().UTC()}).WithGasMeter(NewGasMeter(10000000000000))
-	addrs := simapp.AddTestAddrs(app, ctx, 3, sdk.NewInt(10000))
+	addrs := simapp.AddTestAddrs(app, ctx, 4, sdk.NewInt(10000))
 
 	k := app.CvmKeeper
 
@@ -861,5 +862,52 @@ func TestEWASM(t *testing.T) {
 		result, err = k.Call(ctx, addrs[1], contractAddr, 0, callcode, nil, false, false, false)
 		require.Nil(t, err)
 		require.Equal(t, []byte{0x9a, 0x71, 0xa8, 0x3f}, result)
+	})
+
+	t.Run("test basic eWASM contract constructor", func(t *testing.T) {
+		content, err := ioutil.ReadFile("tests/test.abi")
+		stringabi := string(content)
+		require.Nil(t, err)
+		code, err := ioutil.ReadFile("tests/test.deploy.wasm")
+		codeStr := string(code)
+
+		require.Nil(t, err)
+		code, _ = hex.DecodeString(codeStr)
+
+		creator, _ := crypto.AddressFromBytes(addrs[3])
+		result, err := k.Call(ctx, addrs[3], nil, 0, code, []*payload.ContractMeta{}, false, true, false)
+		require.Nil(t, err)
+		require.NotNil(t, result)
+		contractAddr := sdk.AccAddress(result)
+
+		logger := logging.NewNoopLogger()
+		callcode, _, err := abi.EncodeFunctionCall(stringabi, "wow", logger)
+		require.Nil(t, err)
+		result, err = k.Call(ctx, addrs[3], contractAddr, 0, callcode, nil, false, false, false)
+		require.Nil(t, err)
+		require.Equal(t, []byte{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+			0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7b}, result)
+
+		callcode, _, err = abi.EncodeFunctionCall(stringabi, "balanceOf", logger, creator)
+		require.Nil(t, err)
+		result, err = k.Call(ctx, addrs[3], contractAddr, 0, callcode, nil, false, false, false)
+		require.Nil(t, err)
+		require.Equal(t, []byte{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+			0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x5, 0xf5, 0xe1, 0x0}, result)
+
+		toAddr, _ := crypto.AddressFromBytes(addrs[2])
+		callcode, _, err = abi.EncodeFunctionCall(stringabi, "transfer", logger, toAddr, "255")
+		require.Nil(t, err)
+		result, err = k.Call(ctx, addrs[3], contractAddr, 0, callcode, nil, false, false, false)
+		require.Nil(t, err)
+		require.Equal(t, []byte{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+			0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1}, result)
+
+		callcode, _, err = abi.EncodeFunctionCall(stringabi, "balanceOf", logger, toAddr)
+		require.Nil(t, err)
+		result, err = k.Call(ctx, addrs[3], contractAddr, 0, callcode, nil, false, false, false)
+		require.Nil(t, err)
+		require.Equal(t, []byte{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+			0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff}, result)
 	})
 }
