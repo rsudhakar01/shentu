@@ -66,7 +66,7 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 	config.Seal()
 
 	rootCmd := &cobra.Command{
-		Use:   "certikd",
+		Use:   "certik",
 		Short: "Stargate CosmosHub App",
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
 			if err := client.SetCmdClientContextHandler(initClientCtx, cmd); err != nil {

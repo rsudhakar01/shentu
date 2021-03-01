@@ -13,7 +13,7 @@ builds:
 
     ldflags: |
       -X github.com/cosmos/cosmos-sdk/version.Name=certik
-      -X github.com/cosmos/cosmos-sdk/version.ServerName=certikd
+      -X github.com/cosmos/cosmos-sdk/version.ServerName=certik
       -X github.com/cosmos/cosmos-sdk/version.ClientName=certikcli
       -X github.com/certikfoundation/shentu/version.Version={{ .Version }}
       -X github.com/certikfoundation/shentu/version.Commit={{ .FullCommit }}
@@ -36,15 +36,15 @@ builds:
 
 
   -
-    id: "certikd"
+    id: "certik"
 
-    main: ./cmd/certikd
+    main: ./cmd/certik
 
-    binary: certikd
+    binary: certik
 
     ldflags: |
       -X github.com/cosmos/cosmos-sdk/version.Name=certik
-      -X github.com/cosmos/cosmos-sdk/version.ServerName=certikd
+      -X github.com/cosmos/cosmos-sdk/version.ServerName=certik
       -X github.com/cosmos/cosmos-sdk/version.ClientName=certikcli
       -X github.com/certikfoundation/shentu/version.Version={{ .Version }}
       -X github.com/certikfoundation/shentu/version.Commit={{ .FullCommit }}
@@ -70,7 +70,7 @@ archives:
 
     builds: 
       - certikcli
-      - certikd
+      - certik
 
     name_template: "{{ .Binary }}-{{ .Os }}"
     replacements:
