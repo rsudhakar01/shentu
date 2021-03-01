@@ -12,10 +12,6 @@ import (
 	"github.com/certikfoundation/shentu/x/cert/types"
 )
 
-func InitDefaultGenesis(ctx sdk.Context, k keeper.Keeper) {
-	InitGenesis(ctx, k, *types.DefaultGenesisState())
-}
-
 // InitGenesis initialize default parameters and the keeper's address to pubkey map.
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, data types.GenesisState) {
 	certifiers := data.Certifiers

@@ -484,6 +484,7 @@ func NewCertiKApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 		certtypes.ModuleName,
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
+		ibctransfertypes.ModuleName,
 		oracletypes.ModuleName,
 	)
 
@@ -690,6 +691,8 @@ func (app *CertiKApp) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.API
 	authrest.RegisterTxRoutes(clientCtx, apiSvr.Router)
 	// Register new tx routes from grpc-gateway.
 	authtx.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
+	// Register new tendermint queries routes from grpc-gateway.
+	tmservice.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
 
 	// Register legacy and grpc-gateway routes for all modules.
 	ModuleBasics.RegisterRESTRoutes(clientCtx, apiSvr.Router)
