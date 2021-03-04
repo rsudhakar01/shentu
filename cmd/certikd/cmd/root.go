@@ -40,6 +40,7 @@ import (
 	"github.com/certikfoundation/shentu/app/params"
 	"github.com/certikfoundation/shentu/cmd/certikd/cmd/migrate"
 	"github.com/certikfoundation/shentu/common"
+	oracle_operator "github.com/certikfoundation/shentu/toolsets/oracle-operator"
 	authcli "github.com/certikfoundation/shentu/x/auth/client/cli"
 	bankcli "github.com/certikfoundation/shentu/x/bank/client/cli"
 	"github.com/certikfoundation/shentu/x/crisis"
@@ -131,6 +132,7 @@ func initRootCmd(rootCmd *cobra.Command, encodingConfig params.EncodingConfig) {
 		queryCommand(),
 		txCommand(),
 		keys.Commands(app.DefaultNodeHome),
+		oracle_operator.ServeCommand(),
 	)
 }
 
@@ -248,16 +250,16 @@ func createSimappAndExport(logger log.Logger, db dbm.DB, traceStore io.Writer, h
 	appOpts servertypes.AppOptions) (servertypes.ExportedApp, error) {
 	encCfg := app.MakeEncodingConfig() // Ideally, we would reuse the one created by NewRootCmd.
 	encCfg.Marshaler = codec.NewProtoCodec(encCfg.InterfaceRegistry)
-	var gaiaApp *app.CertiKApp
+	var certikApp *app.CertiKApp
 	if height != -1 {
-		gaiaApp = app.NewCertiKApp(logger, db, traceStore, false, map[int64]bool{}, "", uint(1), encCfg, appOpts)
+		certikApp = app.NewCertiKApp(logger, db, traceStore, false, map[int64]bool{}, "", uint(1), encCfg, appOpts)
 
-		if err := gaiaApp.LoadHeight(height); err != nil {
+		if err := certikApp.LoadHeight(height); err != nil {
 			return servertypes.ExportedApp{}, err
 		}
 	} else {
-		gaiaApp = app.NewCertiKApp(logger, db, traceStore, true, map[int64]bool{}, "", uint(1), encCfg, appOpts)
+		certikApp = app.NewCertiKApp(logger, db, traceStore, true, map[int64]bool{}, "", uint(1), encCfg, appOpts)
 	}
 
-	return gaiaApp.ExportAppStateAndValidators(forZeroHeight, jailAllowedAddrs)
+	return certikApp.ExportAppStateAndValidators(forZeroHeight, jailAllowedAddrs)
 }

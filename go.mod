@@ -15,13 +15,16 @@ require (
 	github.com/regen-network/cosmos-proto v0.3.1
 	github.com/rs/zerolog v1.20.0
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
+	github.com/smartystreets/goconvey v1.6.4
 	github.com/spf13/cast v1.3.1
 	github.com/spf13/cobra v1.1.1
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.7.0
 	github.com/tendermint/crypto v0.0.0-20191022145703-50d29ede1e15
+	github.com/tendermint/go-amino v0.16.0
 	github.com/tendermint/tendermint v0.34.3
 	github.com/tendermint/tm-db v0.6.3
+	github.com/tendermint/tmlibs v0.9.0
 	github.com/tmthrgd/go-hex v0.0.0-20190904060850-447a3041c3bc
 	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad
 	golang.org/x/sys v0.0.0-20210124154548-22da62e12c0c // indirect
