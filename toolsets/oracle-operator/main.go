@@ -13,8 +13,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/server"
 
-	//"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
-
 	"github.com/certikfoundation/shentu/toolsets/oracle-operator/types"
 )
 
@@ -45,12 +43,7 @@ func ServeCommand() *cobra.Command {
 			txf := tx.NewFactoryCLI(cliCtx, cmd.Flags()).WithTxConfig(cliCtx.TxConfig).WithAccountRetriever(cliCtx.AccountRetriever)
 
 			accGetter := txf.AccountRetriever()
-
-			// inBuf := bufio.NewReader(cmd.InOrStdin())
-			//txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			// cliCtx := context.NewCLIContextWithInput(inBuf).WithCodec(cdc)
 			cliCtx.SkipConfirm = true // TODO: new cosmos version
-			// accGetter := authtxb.NewAccountRetriever(cliCtx)
 			if err := accGetter.EnsureExists(cliCtx, cliCtx.GetFromAddress()); err != nil {
 				return err
 			}
