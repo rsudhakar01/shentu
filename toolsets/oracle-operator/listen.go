@@ -97,21 +97,21 @@ func handleMsgCreateTask(ctx types.Context, event abciTypes.Event, ctkMsgChan ch
 	}
 	// get primitive socres
 	var wg sync.WaitGroup
-	primivieScores := make(chan types.PrimitiveScore, len(strategy.Primitives))
+	primitiveScores := make(chan types.PrimitiveScore, len(strategy.Primitives))
 	wg.Add(len(strategy.Primitives))
 	for _, primitive := range strategy.Primitives {
 		go queryPrimitive(
 			ctx.WithLoggerLabels("primitive", primitive),
 			primitive,
 			payload,
-			primivieScores,
+			primitiveScores,
 			&wg,
 		)
 	}
 	wg.Wait()
-	close(primivieScores)
+	close(primitiveScores)
 	// aggregate primitive scores
-	score, err := aggregator.Aggregate(primivieScores)
+	score, err := aggregator.Aggregate(primitiveScores)
 	if err != nil {
 		logger.Error("aggregation failed", "type", strategy.Type, "error", err.Error(), "payload", payload)
 		return
