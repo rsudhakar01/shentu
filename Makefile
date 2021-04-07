@@ -1,7 +1,7 @@
 PACKAGES_SIMTEST=$(shell go list ./... | grep '/simulation')
 VERSION := $(shell echo $(shell git describe --tags) | sed 's/^v//')
 COMMIT := $(shell git log -1 --format='%H')
-LEDGER_ENABLED ?= true
+LEDGER_ENABLED ?= false
 GOBIN ?= $(GOPATH)/bin
 STATIK = $(GOBIN)/statik
 SHASUM := $(shell which sha256sum)
