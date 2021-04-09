@@ -28,12 +28,12 @@ rly tx link demo -d -o 3s
 # rly paths list
 
 # transfer from certik to regen
-# rly tx transfer yulei-1 aplikigo-1 1000000000000uctk $(rly chains address aplikigo-1)
+rly tx transfer yulei-1 aplikigo-1 1000000000000uctk $(rly chains address aplikigo-1)
 
-# rly query unrelayed-packets demo
-# rly tx relay-packets demo -d
-# rly query unrelayed-acknowledgements demo
-# rly tx relay-acknowledgements demo -d
+rly query unrelayed-packets demo
+rly tx relay-packets demo -d
+rly query unrelayed-acknowledgements demo
+rly tx relay-acknowledgements demo -d
 
 # rly query bal yulei-1 testkey
 # rly query bal aplikigo-1 testkey
