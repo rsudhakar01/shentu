@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/cosmos/cosmos-sdk v0.42.3
+	github.com/cosmos/gravity-bridge/module v0.0.0-20210326182550-a7477cc5a816
 	github.com/gogo/protobuf v1.3.3
 	github.com/golang/protobuf v1.4.3
 	github.com/google/go-cmp v0.5.2 // indirect
