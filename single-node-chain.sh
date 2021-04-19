@@ -13,7 +13,7 @@ certik init node0 --chain-id certikchain
 # certikcli config keyring-backend test
 certik keys add jack
 jack=$(certik keys show jack -a)
-certik keys add mary
+certik keys add mary --ledger
 mary=$(certik keys show mary -a)
 certik add-genesis-account $jack 1000000000uctk
 certik add-genesis-account $mary 1000000000uctk
