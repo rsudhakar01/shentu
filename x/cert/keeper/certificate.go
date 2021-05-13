@@ -12,7 +12,7 @@ import (
 // SetCertificate stores a certificate using its ID field.
 func (k Keeper) SetCertificate(ctx sdk.Context, certificate types.Certificate) {
 	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshalBinaryBare(&certificate)
+	bz := k.cdc.MustMarshal(&certificate)
 	store.Set(types.CertificateStoreKey(certificate.CertificateId), bz)
 }
 

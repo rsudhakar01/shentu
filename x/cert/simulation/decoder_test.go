@@ -74,11 +74,11 @@ func TestDecodeStore(t *testing.T) {
 	require.NoError(t, err)
 
 	kvPairs := []kv.Pair{
-		{Key: types.CertifierStoreKey(certifierAddr), Value: cdc.MustMarshalBinaryLengthPrefixed(&certifier)},
-		{Key: types.ValidatorStoreKey(validatorPubKey), Value: cdc.MustMarshalBinaryLengthPrefixed(&validator)},
-		{Key: types.PlatformStoreKey(platformPubKey), Value: cdc.MustMarshalBinaryLengthPrefixed(&platform)},
-		{Key: types.LibraryStoreKey(libraryAddr), Value: cdc.MustMarshalBinaryLengthPrefixed(&library)},
-		{Key: types.CertifierAliasStoreKey(aliasCertifier.Alias), Value: cdc.MustMarshalBinaryLengthPrefixed(&aliasCertifier)},
+		{Key: types.CertifierStoreKey(certifierAddr), Value: cdc.MustMarshalLengthPrefixed(&certifier)},
+		{Key: types.ValidatorStoreKey(validatorPubKey), Value: cdc.MustMarshalLengthPrefixed(&validator)},
+		{Key: types.PlatformStoreKey(platformPubKey), Value: cdc.MustMarshalLengthPrefixed(&platform)},
+		{Key: types.LibraryStoreKey(libraryAddr), Value: cdc.MustMarshalLengthPrefixed(&library)},
+		{Key: types.CertifierAliasStoreKey(aliasCertifier.Alias), Value: cdc.MustMarshalLengthPrefixed(&aliasCertifier)},
 	}
 
 	tests := []struct {

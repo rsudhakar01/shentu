@@ -105,7 +105,7 @@ func (k Keeper) GetVote(ctx sdk.Context, proposalID uint64, voterAddr sdk.AccAdd
 // setVote set a vote.
 func (k Keeper) setVote(ctx sdk.Context, vote types.Vote) {
 	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshalBinaryBare(&vote)
+	bz := k.cdc.MustMarshal(&vote)
 	addr, err := sdk.AccAddressFromBech32(vote.Voter)
 	if err != nil {
 		panic(err)

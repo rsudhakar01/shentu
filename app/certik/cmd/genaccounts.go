@@ -54,7 +54,7 @@ the precedence rule is period > continuous > endtime.
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			ctx := client.GetClientContextFromCmd(cmd)
 			depCdc := ctx.JSONMarshaler
-			cdc := depCdc.(codec.Marshaler)
+			cdc := depCdc.(codec.Codec)
 
 			config := server.GetServerContextFromCmd(cmd).Config
 			config.SetRoot(ctx.HomeDir)

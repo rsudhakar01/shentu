@@ -27,7 +27,7 @@ func AddGenesisShieldAdminCmd(defaultNodeHome string) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := client.GetClientContextFromCmd(cmd)
 			depCdc := ctx.JSONMarshaler
-			cdc := depCdc.(codec.Marshaler)
+			cdc := depCdc.(codec.Codec)
 
 			config := server.GetServerContextFromCmd(cmd).Config
 			config.SetRoot(ctx.HomeDir)

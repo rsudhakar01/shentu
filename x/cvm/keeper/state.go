@@ -22,7 +22,7 @@ type State struct {
 	bk          types.BankKeeper
 	sk          types.StakingKeeper
 	store       sdk.KVStore
-	cdc         codec.BinaryMarshaler
+	cdc         codec.BinaryCodec
 	legacyAmino *codec.LegacyAmino
 }
 
@@ -97,7 +97,7 @@ func (s *State) UpdateAccount(updatedAccount *acm.Account) error {
 	} else {
 		cvmCode = types.NewCVMCode(types.CVMCodeTypeEVMCode, updatedAccount.EVMCode)
 	}
-	s.store.Set(types.CodeStoreKey(updatedAccount.Address), s.cdc.MustMarshalBinaryBare(&cvmCode))
+	s.store.Set(types.CodeStoreKey(updatedAccount.Address), s.cdc.MustMarshal(&cvmCode))
 	err := s.bk.SetBalances(s.ctx, address, sdk.Coins{sdk.NewInt64Coin(s.sk.BondDenom(s.ctx), int64(updatedAccount.Balance))})
 	if err != nil {
 		return err
@@ -197,7 +197,7 @@ func (s *State) SetAddressMeta(address crypto.Address, contMeta []*acm.ContractM
 	for _, meta := range contMeta {
 		metadata.Metas = append(metadata.Metas, meta)
 	}
-	bz, err := s.cdc.MarshalBinaryBare(&metadata)
+	bz, err := s.cdc.Marshal(&metadata)
 	if err != nil {
 		panic(err)
 	}

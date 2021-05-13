@@ -242,7 +242,7 @@ func (k Keeper) GetProposalsFiltered(ctx sdk.Context, params types.QueryProposal
 }
 
 func (keeper Keeper) MarshalProposal(proposal types.Proposal) ([]byte, error) {
-	bz, err := keeper.cdc.MarshalBinaryBare(&proposal)
+	bz, err := keeper.cdc.Marshal(&proposal)
 	if err != nil {
 		return nil, err
 	}

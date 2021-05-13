@@ -14,7 +14,7 @@ func (k Keeper) GetRewards(ctx sdk.Context, addr sdk.AccAddress) types.MixedDecC
 		return types.InitMixedDecCoins()
 	}
 	var provider types.Provider
-	k.cdc.MustUnmarshalBinaryLengthPrefixed(bz, &provider)
+	k.cdc.MustUnmarshalLengthPrefixed(bz, &provider)
 	return provider.Rewards
 }
 
@@ -26,7 +26,7 @@ func (k Keeper) SetRewards(ctx sdk.Context, addr sdk.AccAddress, earnings types.
 	}
 	provider.Rewards = earnings
 	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshalBinaryLengthPrefixed(&provider)
+	bz := k.cdc.MustMarshalLengthPrefixed(&provider)
 	store.Set(types.GetProviderKey(addr), bz)
 }
 

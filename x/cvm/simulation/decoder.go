@@ -12,7 +12,7 @@ import (
 )
 
 // DecodeStore unmarshals the KVPair's value to the corresponding type of cvm module.
-func NewDecodeStore(cdc codec.Marshaler) func(kvA, kvB kv.Pair) string {
+func NewDecodeStore(cdc codec.Codec) func(kvA, kvB kv.Pair) string {
 	return func(kvA, kvB kv.Pair) string {
 		switch {
 		case bytes.Equal(kvA.Key[:1], types.StorageStoreKeyPrefix):

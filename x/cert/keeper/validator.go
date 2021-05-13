@@ -23,7 +23,7 @@ func (k Keeper) SetValidator(ctx sdk.Context, validator cryptotypes.PubKey, cert
 		panic(err)
 	}
 	validatorData := types.Validator{Pubkey: pkAny, Certifier: certifier.String()}
-	store.Set(types.ValidatorStoreKey(validator), k.cdc.MustMarshalBinaryBare(&validatorData))
+	store.Set(types.ValidatorStoreKey(validator), k.cdc.MustMarshal(&validatorData))
 }
 
 // deleteValidator removes a validator from being certified.

@@ -28,7 +28,7 @@ func (k Keeper) GetDeposit(ctx sdk.Context, proposalID uint64, depositorAddr sdk
 // SetDeposit sets the deposit to KVStore.
 func (k Keeper) SetDeposit(ctx sdk.Context, deposit types.Deposit) {
 	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshalBinaryBare(&deposit)
+	bz := k.cdc.MustMarshal(&deposit)
 	depositor, err := sdk.AccAddressFromBech32(deposit.Depositor)
 	if err != nil {
 		panic(err)
