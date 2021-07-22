@@ -22,7 +22,7 @@ service Query {
     }
 
     rpc Platform(QueryPlatformRequest) returns (QueryPlatformResponse) {
-        option (google.api.http).get = "/shentu/cert/v1alpha1/platform";
+        option (google.api.http).get = "/shentu/cert/v1alpha1/platform/{pubkey}";
     }
 
     rpc Certificate(QueryCertificateRequest) returns (QueryCertificateResponse) {
