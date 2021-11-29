@@ -138,7 +138,7 @@ func (am AppModule) Name() string {
 
 // RegisterInvariants registers the governance module invariants.
 func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {
-	// TODO: Register cosmos invariant?
+	keeper.RegisterInvariants(ir, am.keeper, am.bankKeeper)
 }
 
 // Route returns the message routing key for the governance module.
