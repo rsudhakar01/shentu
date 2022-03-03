@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"encoding/binary"
-
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -65,19 +63,4 @@ func (k Keeper) GetAllUsers(ctx sdk.Context) (users []types.User) {
 		return false
 	})
 	return users
-}
-
-// SetNextUserID sets the latest pool ID to store.
-func (k Keeper) SetNextUserID(ctx sdk.Context, id uint64) {
-	store := ctx.KVStore(k.storeKey)
-	bz := make([]byte, 8)
-	binary.LittleEndian.PutUint64(bz, id)
-	store.Set(types.GetNextUserIDKey(), bz)
-}
-
-// GetNextUserID gets the latest pool ID from store.
-func (k Keeper) GetNextUserID(ctx sdk.Context) uint64 {
-	store := ctx.KVStore(k.storeKey)
-	opBz := store.Get(types.GetNextUserIDKey())
-	return binary.LittleEndian.Uint64(opBz)
 }

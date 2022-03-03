@@ -11,5 +11,4 @@ message GenesisState {
     option (gogoproto.goproto_getters) = false;
     
     repeated User users = 1 [ (gogoproto.moretags) = "yaml:\"users\"", (gogoproto.nullable) = false ];
-    uint64 next_user_id = 2 [ (gogoproto.moretags) = "yaml:\"next_user_id\"" ];
 }

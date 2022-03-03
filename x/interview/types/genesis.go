@@ -5,10 +5,9 @@ import (
 )
 
 // NewGenesisState creates a new GenesisState object
-func NewGenesisState(users []User, nextUserId uint64) GenesisState {
+func NewGenesisState(users []User) GenesisState {
 	return GenesisState{
-		Users:      users,
-		NextUserId: nextUserId,
+		Users: users,
 	}
 }
 
@@ -32,7 +31,6 @@ func DefaultGenesisState() *GenesisState {
 				IsLocked: false,
 			},
 		},
-		NextUserId: 4,
 	}
 }
 
