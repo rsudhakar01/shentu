@@ -8,6 +8,7 @@ option go_package = "github.com/certikfoundation/shentu/x/interview/types";
 // Msg defines the shield Msg service.
 service Msg {
   rpc LockUser(MsgLockUser) returns (MsgLockUserResponse);
+  rpc UnlockUser(MsgUnlockUser) returns (MsgUnlockUserResponse);
 }
 
 // MsgCreatePool defines the attributes of a create-pool transaction.
