@@ -16,7 +16,7 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 
 		switch msg := msg.(type) {
 		default:
-			return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "Unrecognized cert Msg type: %v", msg)
+			return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "Unrecognized Msg type: %v", msg)
 		}
 	}
 }

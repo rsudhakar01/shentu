@@ -13,7 +13,7 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 
 }
 
-// RegisterInterfaces registers the x/cert interfaces types with the interface registry
+// RegisterInterfaces registers the x/interview interfaces types with the interface registry
 func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil))
 
@@ -23,11 +23,11 @@ func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 var (
 	amino = codec.NewLegacyAmino()
 
-	// ModuleCdc references the global x/cert module codec. Note, the codec should
+	// ModuleCdc references the global x/interview module codec. Note, the codec should
 	// ONLY be used in certain instances of tests and for JSON encoding as Amino is
 	// still used for that purpose.
 	//
-	// The actual codec used for serialization should be provided to x/cert and
+	// The actual codec used for serialization should be provided to x/interview and
 	// defined at the application level.
 	ModuleCdc = codec.NewAminoCodec(amino)
 )

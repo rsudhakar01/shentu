@@ -14,16 +14,16 @@ import (
 
 // NewTxCmd returns the transaction commands for the interview module.
 func NewTxCmd() *cobra.Command {
-	certTxCmds := &cobra.Command{
+	txCmds := &cobra.Command{
 		Use:   "interview",
 		Short: "Interview module's commands",
 	}
 
-	certTxCmds.AddCommand(
+	txCmds.AddCommand(
 		GetCmdLockUser(),
 	)
 
-	return certTxCmds
+	return txCmds
 }
 
 // GetCmdLockUser returns the interview module's transaction command.
