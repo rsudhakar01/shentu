@@ -428,7 +428,7 @@ func NewShentuApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	)
 	transferModule := transfer.NewAppModule(app.transferKeeper)
 
-	app.interviewKeeper = interviewkeeper.NewKeeper(appCodec, keys[certtypes.StoreKey])
+	app.interviewKeeper = interviewkeeper.NewKeeper(appCodec, keys[interviewtypes.StoreKey])
 
 	// NOTE: the IBC mock keeper and application module is used only for testing core IBC. Do
 	// note replicate if you do not need to test core IBC or light clients.
