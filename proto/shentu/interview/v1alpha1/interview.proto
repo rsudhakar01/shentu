@@ -1,0 +1,15 @@
+syntax = "proto3";
+package shentu.interview.v1alpha1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/certikfoundation/shentu/x/interview/types";
+
+message User {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  uint64 id = 1 [ (gogoproto.moretags) = "yaml:\"id\"" ];
+  string name = 2 [ (gogoproto.moretags) = "yaml:\"name\"" ];
+  bool is_locked = 3 [ (gogoproto.moretags) = "yaml:\"is_locked\"" ];
+}

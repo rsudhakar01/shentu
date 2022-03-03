@@ -1,0 +1,22 @@
+syntax = "proto3";
+package shentu.interview.v1alpha1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/certikfoundation/shentu/x/interview/types";
+
+// Msg defines the shield Msg service.
+service Msg {
+  rpc LockUser(MsgLockUser) returns (MsgLockUserResponse);
+}
+
+// MsgCreatePool defines the attributes of a create-pool transaction.
+message MsgLockUser {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string from = 1 [ (gogoproto.moretags) = "yaml:\"from\"" ];
+  uint64 id = 2 [ (gogoproto.moretags) = "yaml:\"id\"" ];
+}
+
+message MsgLockUserResponse {}

@@ -1,0 +1,15 @@
+syntax = "proto3";
+package shentu.interview.v1alpha1;
+
+import "gogoproto/gogo.proto";
+import "shentu/interview/v1alpha1/interview.proto";
+
+option go_package = "github.com/certikfoundation/shentu/x/interview/types";
+
+message GenesisState {
+    option (gogoproto.equal) = false;
+    option (gogoproto.goproto_getters) = false;
+    
+    repeated User users = 1 [ (gogoproto.moretags) = "yaml:\"users\"", (gogoproto.nullable) = false ];
+    uint64 next_user_id = 2 [ (gogoproto.moretags) = "yaml:\"next_user_id\"" ];
+}
