@@ -1,16 +1,15 @@
-// Package types defines the message types for the cert module.
 package types
 
 const (
-	// ModuleName is the name of the cert module
+	// ModuleName is the name of the interview module
 	ModuleName = "interview"
 
 	// StoreKey is the string store representation
 	StoreKey = ModuleName
 
-	// QuerierRoute is the querier route for the cert module
+	// QuerierRoute is the querier route for the interview module
 	QuerierRoute = ModuleName
 
-	// RouterKey is the msg router key for the cert module
+	// RouterKey is the msg router key for the interview module
 	RouterKey = ModuleName
 )

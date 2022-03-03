@@ -92,6 +92,9 @@ import (
 	"github.com/certikfoundation/shentu/v2/x/gov"
 	govkeeper "github.com/certikfoundation/shentu/v2/x/gov/keeper"
 	govtypes "github.com/certikfoundation/shentu/v2/x/gov/types"
+	"github.com/certikfoundation/shentu/v2/x/interview"
+	interviewkeeper "github.com/certikfoundation/shentu/v2/x/interview/keeper"
+	interviewtypes "github.com/certikfoundation/shentu/v2/x/interview/types"
 	"github.com/certikfoundation/shentu/v2/x/mint"
 	mintkeeper "github.com/certikfoundation/shentu/v2/x/mint/keeper"
 	"github.com/certikfoundation/shentu/v2/x/oracle"
@@ -151,6 +154,7 @@ var (
 		evidence.AppModuleBasic{},
 		ibc.AppModuleBasic{},
 		transfer.AppModuleBasic{},
+		interview.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -202,6 +206,7 @@ type ShentuApp struct {
 	cvmKeeper        cvmkeeper.Keeper
 	oracleKeeper     oraclekeeper.Keeper
 	shieldKeeper     shieldkeeper.Keeper
+	interviewKeeper  interviewkeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	scopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -250,6 +255,7 @@ func NewShentuApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 		ibchost.StoreKey,
 		ibctransfertypes.StoreKey,
 		capabilitytypes.StoreKey,
+		interviewtypes.StoreKey,
 	}
 
 	keys := sdk.NewKVStoreKeys(ks...)
@@ -422,6 +428,8 @@ func NewShentuApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	)
 	transferModule := transfer.NewAppModule(app.transferKeeper)
 
+	app.interviewKeeper = interviewkeeper.NewKeeper(appCodec, keys[certtypes.StoreKey])
+
 	// NOTE: the IBC mock keeper and application module is used only for testing core IBC. Do
 	// note replicate if you do not need to test core IBC or light clients.
 	mockModule := ibcmock.NewAppModule(scopedIBCMockKeeper, &app.ibcKeeper.PortKeeper)
@@ -463,6 +471,7 @@ func NewShentuApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 		shield.NewAppModule(app.shieldKeeper, app.accountKeeper, app.bankKeeper, app.stakingKeeper),
 		ibc.NewAppModule(app.ibcKeeper),
 		transferModule,
+		interview.NewAppModule(app.interviewKeeper),
 	)
 
 	// NOTE: During BeginBlocker, slashing comes after distr so that
@@ -498,6 +507,7 @@ func NewShentuApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 		sdkauthz.ModuleName,
 		ibctransfertypes.ModuleName,
 		sdkfeegrant.ModuleName,
+		interviewtypes.ModuleName,
 	)
 
 	app.mm.SetOrderExportGenesis(
@@ -519,6 +529,7 @@ func NewShentuApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 		ibctransfertypes.ModuleName,
 		sdkfeegrant.ModuleName,
 		evidencetypes.ModuleName,
+		interviewtypes.ModuleName,
 	)
 
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter(), encodingConfig.Amino)
