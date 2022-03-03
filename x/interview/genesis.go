@@ -7,16 +7,20 @@ import (
 	"github.com/certikfoundation/shentu/v2/x/interview/types"
 )
 
-func InitDefaultGenesis(ctx sdk.Context, k keeper.Keeper) {
-	InitGenesis(ctx, k, *types.DefaultGenesisState())
-}
-
 // InitGenesis initialize default parameters and the keeper's address to pubkey map.
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, data types.GenesisState) {
+	users := data.Users
+	nextUserId := data.NextUserId
 
+	for _, user := range users {
+		k.SetUser(ctx, user)
+	}
+	k.SetNextUserID(ctx, nextUserId)
 }
 
 // ExportGenesis writes the current store values to a genesis file, which can be imported again with InitGenesis.
-func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
-	return nil
+func ExportGenesis(ctx sdk.Context, k keeper.Keeper) types.GenesisState {
+	users := k.GetAllUsers(ctx)
+	nextUserId := k.GetNextUserID(ctx)
+	return types.NewGenesisState(users, nextUserId)
 }

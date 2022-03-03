@@ -14,7 +14,26 @@ func NewGenesisState(users []User, nextUserId uint64) GenesisState {
 
 // DefaultGenesisState creates a default GenesisState object
 func DefaultGenesisState() *GenesisState {
-	return &GenesisState{NextUserId: 1}
+	return &GenesisState{
+		Users: []User{
+			{
+				Id:       1,
+				Name:     "Alice",
+				IsLocked: false,
+			},
+			{
+				Id:       2,
+				Name:     "Bob",
+				IsLocked: false,
+			},
+			{
+				Id:       3,
+				Name:     "Mary",
+				IsLocked: false,
+			},
+		},
+		NextUserId: 4,
+	}
 }
 
 // ValidateGenesis - validate crisis genesis data
