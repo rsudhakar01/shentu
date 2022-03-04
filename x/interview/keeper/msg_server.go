@@ -35,3 +35,19 @@ func (k msgServer) LockUser(goCtx context.Context, msg *types.MsgLockUser) (*typ
 
 	return &types.MsgLockUserResponse{}, nil
 }
+
+func (k msgServer) UnlockUser(goCtx context.Context, msg *types.MsgUnlockUser) (*types.MsgUnlockUserResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	user, found := k.Keeper.GetUser(ctx, msg.Id)
+	if !found {
+		return nil, types.ErrUserNotFound
+	}
+	if !user.IsLocked {
+		return nil, types.ErrUserAlreadyUnlocked
+	}
+	user.IsLocked = false
+	k.Keeper.SetUser(ctx, user)
+
+	return &types.MsgUnlockUserResponse{}, nil
+}
